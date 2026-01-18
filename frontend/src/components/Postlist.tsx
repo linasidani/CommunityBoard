@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, Search, Filter } from 'lucide-react';
 import { PostCard } from './PostCard';
+import { PostDetail } from './PostDetail';
 import { PostModal } from './PostModal';
 import { usePosts } from '../hooks/usePosts';
 import { useAuth } from '../hooks/useAuth';
@@ -16,6 +17,7 @@ export const PostList = () => {
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const handleCreatePost = async (data: { title: string; content: string; category: string }) => {
     await createPost(data);
@@ -69,18 +71,19 @@ export const PostList = () => {
           {/* Search */}
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} aria-hidden="true" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Sök inlägg..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                aria-label="Sök inlägg"
               />
             </div>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800 transition"
             >
               Sök
             </button>
@@ -88,7 +91,7 @@ export const PostList = () => {
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                className="bg-gray-500 dark:bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 dark:hover:bg-gray-700 transition"
               >
                 Rensa
               </button>
@@ -102,9 +105,10 @@ export const PostList = () => {
                 setEditingPost(null);
                 setIsModalOpen(true);
               }}
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition flex items-center gap-2 whitespace-nowrap"
+              className="bg-green-600 dark:bg-green-700 text-white px-6 py-2 rounded hover:bg-green-700 dark:hover:bg-green-800 transition flex items-center gap-2 whitespace-nowrap"
+              aria-label="Skapa nytt inlägg"
             >
-              <Plus size={20} />
+              <Plus size={20} aria-hidden="true" />
               Nytt inlägg
             </button>
           )}
@@ -112,17 +116,18 @@ export const PostList = () => {
 
         {/* Category filters */}
         <div className="flex items-center gap-2 flex-wrap">
-          <Filter size={18} className="text-gray-600" />
-          <span className="text-sm text-gray-600">Kategorier:</span>
+          <Filter size={18} className="text-gray-600 dark:text-gray-400" aria-hidden="true" />
+          <span className="text-sm text-gray-600 dark:text-gray-400">Kategorier:</span>
           {CATEGORIES.map((category) => (
             <button
               key={category}
               onClick={() => handleCategoryFilter(category)}
               className={`text-sm px-3 py-1 rounded transition ${
                 selectedCategory === category
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
               }`}
+              aria-pressed={selectedCategory === category}
             >
               {category}
             </button>
@@ -133,14 +138,14 @@ export const PostList = () => {
       {/* Loading state */}
       {loading && (
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Laddar inlägg...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400" aria-hidden="true"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Laddar inlägg...</p>
         </div>
       )}
 
       {/* Error state */}
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 px-4 py-3 rounded" role="alert">
           {error}
         </div>
       )}
@@ -149,12 +154,12 @@ export const PostList = () => {
       {!loading && !error && (
         <>
           {posts.length === 0 ? (
-            <div className="text-center py-12 text-gray-600">
+            <div className="text-center py-12 text-gray-600 dark:text-gray-400">
               <p className="text-lg">Inga inlägg hittades</p>
               {isAuthenticated && (
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+                  className="mt-4 bg-blue-600 dark:bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800 transition"
                 >
                   Skapa första inlägget
                 </button>
@@ -168,6 +173,7 @@ export const PostList = () => {
                   post={post}
                   onEdit={handleEdit}
                   onDelete={deletePost}
+                  onClick={() => setSelectedPost(post)}
                 />
               ))}
             </div>
@@ -186,6 +192,14 @@ export const PostList = () => {
         post={editingPost}
         categories={CATEGORIES}
       />
+
+      {/* Post Detail Modal */}
+      {selectedPost && (
+        <PostDetail 
+          post={selectedPost} 
+          onClose={() => setSelectedPost(null)} 
+        />
+      )}
     </div>
   );
 };

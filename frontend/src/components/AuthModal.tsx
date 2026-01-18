@@ -57,23 +57,24 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 relative">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+          aria-label="Stäng"
         >
           <X size={24} />
         </button>
 
         {/* Title */}
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
           {isLogin ? 'Logga in' : 'Registrera'}
         </h2>
 
         {/* Error message */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4" role="alert">
             {error}
           </div>
         )}
@@ -82,14 +83,15 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="auth-username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Användarnamn (minst 3 tecken)
               </label>
               <input
+                id="auth-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 required
                 minLength={3}
               />
@@ -97,27 +99,29 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="auth-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               E-post
             </label>
             <input
+              id="auth-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="auth-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Lösenord {!isLogin && '(minst 6 tecken)'}
             </label>
             <input
+              id="auth-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               required
               minLength={6}
             />
@@ -126,21 +130,21 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-blue-600 dark:bg-blue-700 text-white py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800 transition disabled:opacity-50"
           >
             {loading ? 'Laddar...' : isLogin ? 'Logga in' : 'Registrera'}
           </button>
         </form>
 
         {/* Toggle between login/register */}
-        <div className="mt-4 text-center text-sm text-gray-600">
+        <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
           {isLogin ? 'Har du inget konto?' : 'Har du redan ett konto?'}
           <button
             onClick={() => {
               setIsLogin(!isLogin);
               setError('');
             }}
-            className="text-blue-600 hover:underline ml-1"
+            className="text-blue-600 dark:text-blue-400 hover:underline ml-1"
           >
             {isLogin ? 'Registrera här' : 'Logga in här'}
           </button>
@@ -148,8 +152,10 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
         {/* Test credentials hint */}
         {isLogin && (
-          <div className="mt-4 p-3 bg-gray-100 rounded text-sm text-gray-600">
-            <strong>Tips:</strong> Skapa ett nytt konto om du glömt lösenordet!
+          <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded text-sm text-gray-600 dark:text-gray-300">
+            <strong>Testanvändare:</strong><br />
+            Admin: admin@test.com / Admin123!<br />
+            User: user@test.com / User123!
           </div>
         )}
       </div>

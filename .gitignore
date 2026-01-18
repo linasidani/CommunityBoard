@@ -1,0 +1,12 @@
+# .NET
+backend/bin/
+backend/obj/
+
+# SQLite
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+
+# Node
+frontend/node_modules/
+
