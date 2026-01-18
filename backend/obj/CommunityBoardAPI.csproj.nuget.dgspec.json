@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/el-sidani/Desktop/CommunityBoardAPI/CommunityBoardAPI.csproj": {}
+    "/Users/el-sidani/Desktop/CommunityBoard/backend/CommunityBoardAPI.csproj": {}
   },
   "projects": {
-    "/Users/el-sidani/Desktop/CommunityBoardAPI/CommunityBoardAPI.csproj": {
+    "/Users/el-sidani/Desktop/CommunityBoard/backend/CommunityBoardAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/el-sidani/Desktop/CommunityBoardAPI/CommunityBoardAPI.csproj",
+        "projectUniqueName": "/Users/el-sidani/Desktop/CommunityBoard/backend/CommunityBoardAPI.csproj",
         "projectName": "CommunityBoardAPI",
-        "projectPath": "/Users/el-sidani/Desktop/CommunityBoardAPI/CommunityBoardAPI.csproj",
+        "projectPath": "/Users/el-sidani/Desktop/CommunityBoard/backend/CommunityBoardAPI.csproj",
         "packagesPath": "/Users/el-sidani/.nuget/packages/",
-        "outputPath": "/Users/el-sidani/Desktop/CommunityBoardAPI/obj/",
+        "outputPath": "/Users/el-sidani/Desktop/CommunityBoard/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/el-sidani/.nuget/NuGet/NuGet.Config"

@@ -263,6 +263,16 @@ app.MapDelete("/api/comments/{id}", async (int id, ClaimsPrincipal user, AppDbCo
     return Results.Ok(new { message = "Comment deleted" });
 }).RequireAuthorization();
 
+// ============================================
+// USER STATS ENDPOINT (NYA!)
+// ============================================
+
+app.MapGet("/api/users/stats", async (AppDbContext db) =>
+{
+    var stats = await db.UserPostStats.ToListAsync();
+    return Results.Ok(stats);
+});
+
 app.Run();
 
 // ============================================
@@ -274,18 +284,18 @@ void SeedData(AppDbContext db)
 
     var admin = new User
     {
-    Username = "admin",
-    Email = "admin@test.com",
-    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
-    Role = "Admin"
+        Username = "admin",
+        Email = "admin@test.com",
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+        Role = "Admin"
     };
 
-   var user1 = new User
+    var user1 = new User
     {
-    Username = "user1",
-    Email = "user@test.com",
-    PasswordHash = BCrypt.Net.BCrypt.HashPassword("User123!"),
-    Role = "User"
+        Username = "user1",
+        Email = "user@test.com",
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword("User123!"),
+        Role = "User"
     };
 
     db.Users.AddRange(admin, user1);
@@ -385,6 +395,16 @@ public class PostWithDetails
     public int CommentCount { get; set; }
 }
 
+public class UserPostStats
+{
+    public int UserId { get; set; }
+    public string Username { get; set; } = "";
+    public string Email { get; set; } = "";
+    public int PostCount { get; set; }
+    public int CommentCount { get; set; }
+    public DateTime? LastActivityDate { get; set; }
+}
+
 public record RegisterDto(string Username, string Email, string Password);
 public record LoginDto(string Email, string Password);
 public record CreatePostDto(string Title, string Content, string Category);
@@ -413,6 +433,7 @@ public class AppDbContext : DbContext
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostWithDetails> PostsWithDetails { get; set; }
+    public DbSet<UserPostStats> UserPostStats { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -437,6 +458,26 @@ public class AppDbContext : DbContext
                 JOIN Users u ON p.UserId = u.Id
                 LEFT JOIN Comments c ON p.Id = c.PostId
                 GROUP BY p.Id, p.Title, p.Content, p.Category, p.UserId, u.Username, p.CreatedAt
+            ");
+
+        // UserPostStats as a keyless entity (SQL View)
+        modelBuilder.Entity<UserPostStats>()
+            .HasNoKey()
+            .ToView("UserPostStats");
+
+        modelBuilder.Entity<UserPostStats>()
+            .ToSqlQuery(@"
+                SELECT 
+                    u.Id as UserId,
+                    u.Username,
+                    u.Email,
+                    COUNT(DISTINCT p.Id) as PostCount,
+                    COUNT(DISTINCT c.Id) as CommentCount,
+                    MAX(COALESCE(p.CreatedAt, c.CreatedAt)) as LastActivityDate
+                FROM Users u
+                LEFT JOIN Posts p ON u.Id = p.UserId
+                LEFT JOIN Comments c ON u.Id = c.UserId
+                GROUP BY u.Id, u.Username, u.Email
             ");
     }
 }
